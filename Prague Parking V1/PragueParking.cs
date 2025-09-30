@@ -17,23 +17,66 @@
 
 Console.Title = "Prague Parking";
 
-string[] vehicles = new string[100];
-AddVehicle();
-//PragueParking();
+string[] parkingGarage = new string[100];
+
+PragueParking();
+
 
 //TODO: Systemet skall kunna ta emot ett fordon och tala om vilken parkeringsplats den skall köras till
-
 void AddVehicle()
 {
 	Console.WriteLine("Vilken fordonstyp vill du parkera? (1 för Bil, 2 för MC)");
-	string  vehicle= Console.ReadLine();
+	string vehicleChoice = Console.ReadLine();
 	Console.WriteLine("Ange fordonets registreringsnummer: ");
-	string plateNumber = Console.ReadLine();	
-	if (vehicle == 1)
+	string plateNumber = Console.ReadLine();
+	string vehicleType = "";
+
+	if (vehicleChoice == "2")
 	{
-		
+		for (int index= 0; index < parkingGarage.Length; index++)
+		{
+			if (!String.IsNullOrEmpty(parkingGarage[index]) &&
+				parkingGarage[index].Contains("MC#") &&
+				!parkingGarage[index].Contains("|"))
+			{
+				parkingGarage[index] += "|MC#" + plateNumber;
+				Console.WriteLine($"\nMotorcykeln {plateNumber} har dubbelparkerats på plats: {i + 1}.");
+
+				return;
+			}
+		}
 	}
-	Console.WriteLine($"\nFordonet med nummre {vehicles[0]} har parkerats.");
+
+	int parkingSpot = -1;
+	for (int index = 0; index < parkingGarage.Length; index++)
+	{
+		if (String.IsNullOrEmpty(parkingGarage[index]))
+		{
+			parkingSpot = index;
+			break;
+		}
+	}
+
+	if (parkingSpot != -1)
+	{
+		if (vehicleChoice == "1")
+		{
+			vehicleType = "BIL";
+			parkingGarage[parkingSpot] = vehicleType + "#" + plateNumber;
+			Console.WriteLine($"\nBIL#{plateNumber} har parkerats på plats: {parkingSpot + 1}.");
+		}
+		else if (vehicleChoice == "2")
+		{
+			vehicleType = "MC";
+			parkingGarage[parkingSpot] = vehicleType + "#" + plateNumber;
+			Console.WriteLine($"\nMC#{plateNumber} har parkerats på plats: {parkingSpot + 1}.");
+		}
+		else Console.WriteLine("Ogiltigt inmatning. Vänligen ange 1 eller 2");
+	}
+	else
+	{
+		Console.WriteLine("Inga parkeringsplatser hittades.");
+	}
 }
 
 //TODO: Manuellt flytta ett fordon från en plats till en annan.
@@ -42,18 +85,29 @@ void AddVehicle()
 
 
 //TODO: Kunden önskar en textbaserad meny
-//void PragueParking()
-//{
-//	//Färgen är baserad på Pragues Flagga
-//	Console.BackgroundColor = ConsoleColor.Red;
-//	Console.Clear();
-//	Console.ForegroundColor = ConsoleColor.Yellow;
-	
-//	Console.WriteLine("\nVälj ett alternativ:");
-//	Console.WriteLine("----------------------");
-//	Console.WriteLine("1. Parkera ett fodon");
-//	Console.WriteLine("2. Ta bort fordon");
-//	Console.WriteLine("3. Flytta fordon");
-//	Console.WriteLine("4. Sök efter fordon.");
-//}
+void PragueParking()
+{
+	//Färgen är baserad på Pragues Flagga
+	Console.BackgroundColor = ConsoleColor.Red;
+	Console.Clear();
+	Console.ForegroundColor = ConsoleColor.Yellow;
+
+	Console.WriteLine("""
+
+		Välj ett alternativ: 
+		----------------------
+		1. Parkera ett fodon
+		2. Ta bort fordon
+		3. Flytta fordon
+		4. Sök efter fordon.
+
+		""");
+
+	string userChoice = Console.ReadLine();
+
+	if (userChoice == "1")
+	{
+		AddVehicle();
+	}
+}
 
