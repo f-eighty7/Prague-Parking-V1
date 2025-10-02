@@ -53,7 +53,7 @@ void PragueParking()
 		{
 			while (true)
 			{
-				Console.Write("\nVilken fordonstyp vill du parkera? ((1) BIL, (2) MC) eller (0) för att backa: ");
+				Console.Write("\nVilken fordonstyp vill du parkera? ((1) BIL, (2) MC)? (0) för att avrbyta: ");
 				string vehicleChoice = Console.ReadLine();
 				if (vehicleChoice == "1" || vehicleChoice == "2")
 				{
@@ -62,10 +62,14 @@ void PragueParking()
 
 					if (isRegNumValid(regNum))
 					{
-						AddVehicle(parkingGarage, vehicleChoice, regNum);
-						Console.WriteLine("\nTryck valfri tangent för att återgå till menyn...");
-						Console.ReadKey();
-						break;
+						bool wasAdded = AddVehicle(parkingGarage, vehicleChoice, regNum);
+
+						if (wasAdded)
+						{
+							Console.WriteLine("\nTryck valfri tangent för att återgå till menyn...");
+							Console.ReadKey();
+							break;
+						}
 					}
 					else
 					{
@@ -87,18 +91,18 @@ void PragueParking()
 		{
 			while (true)
 			{
-				Console.Write("\nAnge registreringsnummer på fordonet du vill ta bort eller (0) backa: ");
-				string regNumToRemove = Console.ReadLine().ToUpper();
+				Console.Write("\nAnge registreringsnummer på fordonet du vill ta bort. (0) för att avrbyta: ");
+				string vehicleToRemove = Console.ReadLine().ToUpper();
 
-				if (isRegNumValid(regNumToRemove))
+				if (isRegNumValid(vehicleToRemove))
 				{
-					if (regNumToRemove == "0")
+					if (vehicleToRemove == "0")
 					{
 						break;
 					}
-					else if (!String.IsNullOrEmpty(regNumToRemove))
+					else
 					{
-						bool wasRemoved = RemoveVehicle(regNumToRemove);
+						bool wasRemoved = RemoveVehicle(vehicleToRemove);
 
 						if (wasRemoved)
 						{
@@ -120,18 +124,29 @@ void PragueParking()
 			Console.WriteLine("Ange registeringsnummret på fordonet du vill flytta: ");
 			Console.Write("\nRegisteringsnummret får max ha 10 Tecken: );");
 			string vehicleToMove = Console.ReadLine().ToUpper();
-
+			
 			if (isRegNumValid(vehicleToMove))
 			{
-				MoveVehicle(vehicleToMove);
+				Console.Write("\nTill vilken parkeringsplats vill du flytta den till? (1-00: ");
+				if (int.TryParse(Console.ReadLine(), out int moveToSpot))
+				{
+					bool wasRemoved = MoveVehicle(vehicleToMove);
+					Console.WriteLine("\nTryck valfri tangent för att återgå till menyn...");
+					Console.ReadKey();
+					break;
+				}
 			}
+
+
+			
+
 		}
 
 		else if (userChoice == "4")
 		{
 			while (true)
 			{
-				Console.Write("\nVill du söker med (1) Registeringsnummer, (2) Parkeringsplatsnummer eller (0) backa: ");
+				Console.Write("\nVill du söker med (1) Registeringsnummer, (2) Parkeringsplatsnummer. ((0) Avbryt): ");
 				string searchChoice = Console.ReadLine();
 
 				if (searchChoice == "0")
@@ -170,7 +185,7 @@ void PragueParking()
 					}
 					else
 					{
-						Console.WriteLine("\nFelaktig inmatnig. Vänligen ange en siffra.");
+						Console.WriteLine("\nFelaktig inmatnig. Vänligen ange en parkeringsplats.");
 					}
 				}
 				else
@@ -195,7 +210,7 @@ void PragueParking()
 				userChoice = Console.ReadLine();
 				if (userChoice == "1")
 				{
-					Console.WriteLine("\nNHejdå!");
+					Console.WriteLine("\nHejdå!");
 					return;
 				}
 				else if (userChoice == "0")
@@ -213,25 +228,25 @@ void PragueParking()
 
 
 //TODO: Systemet skall kunna ta emot ett fordon och tala om vilken parkeringsplats den skall köras till
-void AddVehicle(string[] garage, string vehicleChoice, string regNum)
+bool AddVehicle(string[] garage, string vehicleChoice, string regNum)
 {
 	if (vehicleChoice == "2")
 	{
 		for (int index= 0; index < garage.Length; index++)
 		{
-			if (!String.IsNullOrEmpty(garage[index]) &&
-				garage[index].Contains("MC#") &&
-				!garage[index].Contains("|"))
+			if (!String.IsNullOrEmpty(garage[index]) && garage[index].Contains("MC#") && !garage[index].Contains("|"))
 			{
 				garage[index] += "|MC#" + regNum;
 				Console.WriteLine($"\nMotorcykeln {regNum} har dubbelparkerats på plats: {index + 1}.");
 
-				return;
+				return true;
 			}
 		}
 	}
 
 	int emptySpot = -1;
+
+	// Hittar och sparar indexet för den första lediga parkeringsplatsen.
 	for (int index = 0; index < garage.Length; index++)
 	{
 		if (String.IsNullOrEmpty(garage[index]))
@@ -247,24 +262,59 @@ void AddVehicle(string[] garage, string vehicleChoice, string regNum)
 		{
 			garage[emptySpot] = "BIL#" + regNum;
 			Console.WriteLine($"\nBilen {regNum} har parkerats på plats: {emptySpot + 1}.");
+			return true;
 		}
 		else if (vehicleChoice == "2")
 		{
 			garage[emptySpot] = "MC#" + regNum;
 			Console.WriteLine($"\nMotorcykeln {regNum} har parkerats på plats: {emptySpot + 1}.");
+			return true;
 		}
 		else Console.WriteLine("\nOgiltigt inmatning. Vänligen ange 1 eller 2");
+		return false;
 	}
 	else
 	{
 		Console.WriteLine("\nInga parkeringsplatser hittades.");
+		return false;
 	}
 }
 
 //TODO: Manuellt flytta ett fordon från en plats till en annan.
-void MoveVehicle(string regNum)
+bool MoveVehicle(string regNum, int toSpot)
 {
-	
+	int findIndex = FindVehicleIndexByRegNum(regNum);
+
+	if (findIndex != -1)
+	{
+		string spotContent = parkingGarage[findIndex];
+
+		if (spotContent.Contains('|'))
+		{
+			string[] vehiclesInSpot = spotContent.Split('|');
+
+			string vehicleToKeep = "";
+
+			// Loopar igenom de två fordonen på platsen.
+			foreach (string vehicleData in vehiclesInSpot)
+			{
+				// 1. Delar upp fordonets data, t.ex. "MC#ABC123" blir till ["MC", "ABC123"]
+				string[] parts = vehicleData.Split('#');
+				// Hämta det rena registreringsnumret (som ligger på index 1)
+				string currentRegNum = parts[1];
+
+				// 2. Gör en EXAKT jämförelse.
+				// Fråga: Är detta fordonets regnr INTE samma som det vi vill ta bort?
+				if (currentRegNum != regNum)
+				{
+					// Om ja, då är det detta fordon vi vill SPARA.
+					vehicleToKeep = vehicleData;
+					break; // Vi slutar loopen, vi har hittat den vi ska behålla.
+				}
+			}
+
+		}
+	}
 }
 
 //TODO: Ta bort fordon vid uthämtning.
@@ -282,10 +332,10 @@ bool RemoveVehicle(string regNum)
 
 			string vehicleToKeep = "";
 
-			// Loopa igenom de två fordonen på platsen.
+			// Loopar igenom de två fordonen på platsen.
 			foreach (string vehicleData in vehiclesInSpot)
 			{
-				// 1. Dela upp fordonets data, t.ex. "MC#ABC123" blir till ["MC", "ABC123"]
+				// 1. Delar upp fordonets data, t.ex. "MC#ABC123" blir till ["MC", "ABC123"]
 				string[] parts = vehicleData.Split('#');
 				// Hämta det rena registreringsnumret (som ligger på index 1)
 				string currentRegNum = parts[1];
@@ -296,7 +346,7 @@ bool RemoveVehicle(string regNum)
 				{
 					// Om ja, då är det detta fordon vi vill SPARA.
 					vehicleToKeep = vehicleData;
-					break; // Vi kan sluta loopen, vi har hittat den vi ska behålla.
+					break; // Vi slutar loopen, vi har hittat den vi ska behålla.
 				}
 			}
 
@@ -314,7 +364,7 @@ bool RemoveVehicle(string regNum)
 	}
 	else
 	{
-		Console.WriteLine($"\nEtt fordon med registreringsnummer '{regNum}' kunde inte hittas.");
+		Console.WriteLine($"\nEtt fordon med registreringsnummer '{regNum}' kunde inte hittas. Försök igen.");
 		return false;
 	}
 }
