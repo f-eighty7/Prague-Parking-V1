@@ -1,28 +1,25 @@
 ﻿/*
-	Prague Parking V1
-	Tekniska krav:
-	● All identifiering av fordon sker genom registeringsnummer
-	● Registreringsnummer är alltid strängar med maxlängd 10 tecken. 
-	● På parkeringsplatsen finns 100 parkeringsrutor 
-	● En parkeringsruta kan innehålla  
-		o 1 bil eller  
-		o 1 mc eller  
-		o 2mc eller
-		o vara tom
+	Lägg till minst två av nedanstående funktioner. 
+		1. Visualisering av vad som finns på parkeringsplatsen. Dvs vilka platser är lediga, halvfulla och 
+		fyllda så att personalen får en god överblick. Pluspoäng för kreativa lösningar och färgmarkering. 
+		Ni får lov att göra mer än en rapport tex alla motorcyklar, alla bilar, alla tomma platser etc. En 
+		lista som visar vilka regnr och fordonstyper som finns på vilken plats är minimum.
 
-	Parkeringsrutorna skall hanteras som en endimensionell vektor (array) av strängar. Vektorn skall hantera 
-	100 element. Kundens personal är människor och förväntar sig att platserna numreras 1–100 i in- och 
-	utmatningar i systemet. 
+		3. Säkra upp användarinput - tex be om nya data om användare matar in felaktiga data när 
+		registreringsnummer och eventuellt platsnummer skall anges. P-platsnummer måste vara tal i 
+		intervallet 1–100, registreringsnummer får inte innehålla mellanslag o. dyl., samt måste hantera 
+		västeuropeiska alfabeten samt siffror. Tex Ü, Å, Ä, Ö etc. Titta i Wikipedia: 
+		https://sv.wikipedia.org/wiki/Registreringsskylt
 */
 
-Console.Title = "Prague Parking V1";
+using System;
+
+Console.Title = "Prague Parking V1.1";
 
 string[] parkingGarage = new string[100];
 
 PragueParking();
 
-
-//TODO: Kunden önskar en textbaserad meny
 void PragueParking()
 {
 	//Färgen är baserad på Pragues Flagga
@@ -51,6 +48,7 @@ void PragueParking()
 
 		if (userChoice == "1")
 		{
+			Console.Clear();
 			while (true)
 			{
 				Console.Write("\nVilken fordonstyp vill du parkera? ((1) BIL, (2) MC)? (0) för att avbryta: ");
@@ -216,7 +214,7 @@ void PragueParking()
 		else if (userChoice == "5")
 		{
 			Console.Clear();
-			UsedParkingSpots();
+			VisualizeParkingLot();
 			Console.WriteLine("\nTryck valfri tangent för att återgå till menyn...");
 			Console.ReadKey();
 		}
@@ -245,9 +243,6 @@ void PragueParking()
 		}
 	}
 }
-
-
-//TODO: Systemet skall kunna ta emot ett fordon och tala om vilken parkeringsplats den skall köras till
 bool AddVehicle(string[] garage, string vehicleChoice, string regNum)
 {
 	if (vehicleChoice == "2")
@@ -299,8 +294,6 @@ bool AddVehicle(string[] garage, string vehicleChoice, string regNum)
 		return false;
 	}
 }
-
-//TODO: Manuellt flytta ett fordon från en plats till en annan.
 bool MoveVehicle(string regNum, int toSpot)
 {
 	int fromIndex = FindVehicleIndexByRegNum(regNum);
@@ -364,7 +357,6 @@ bool MoveVehicle(string regNum, int toSpot)
 	return true;
 }
 
-//TODO: Ta bort fordon vid uthämtning.
 bool RemoveVehicle(string regNum)
 {
 	int findIndex = FindVehicleIndexByRegNum(regNum);
@@ -406,32 +398,99 @@ bool RemoveVehicle(string regNum)
 	}
 }
 
+//void UsedParkingSpots()
+//{
+//	Console.WriteLine("\n--- Parkerade Fordon ---");
 
-//TODO: Visa vilka fordon som är parkerade och vart
-void UsedParkingSpots()
+//	bool foundAnyVehicles = false;
+
+//	for (int i = 0; i < parkingGarage.Length; i++)
+//	{
+//		if (!String.IsNullOrEmpty(parkingGarage[i]))
+//		{
+//			foundAnyVehicles = true;
+//			Console.WriteLine($"Plats {i + 1}: {parkingGarage[i]}");
+//		}
+//	}
+//	if (!foundAnyVehicles)
+//	{
+//		Console.WriteLine("Parkeringsplatsen är helt tom.");
+//	}
+//	Console.WriteLine("------------------------");
+//}
+
+//TODO: Visualisering av vad som finns på parkeringsplatsen
+void VisualizeParkingLot()
 {
 	Console.Clear();
-	Console.WriteLine("\n--- Parkerade Fordon ---");
-
-	bool foundAnyVehicles = false;
+	Console.WriteLine("\n--- Visuell Översikt - Parkeringshuset ---");
+	Console.WriteLine("------------------------------------------");
 
 	for (int i = 0; i < parkingGarage.Length; i++)
 	{
-		if (!String.IsNullOrEmpty(parkingGarage[i]))
+		string spotContent = parkingGarage[i];
+
+		if (!String.IsNullOrEmpty(spotContent) && spotContent.Contains("MC#") && !spotContent.Contains('|'))
 		{
-			foundAnyVehicles = true;
-			Console.WriteLine($"Plats {i + 1}: {parkingGarage[i]}");
+			Console.BackgroundColor = ConsoleColor.DarkYellow;
+			Console.ForegroundColor = ConsoleColor.Black;
+		}
+		else if (!String.IsNullOrEmpty(spotContent))
+		{
+			Console.BackgroundColor = ConsoleColor.DarkRed;
+			Console.ForegroundColor = ConsoleColor.White;
+		}
+		else
+		{
+			Console.BackgroundColor = ConsoleColor.Green;
+			Console.ForegroundColor = ConsoleColor.Black;
+		}
+
+		Console.Write($"[{i + 1:D2}:{spotContent}]");
+
+		Console.BackgroundColor = ConsoleColor.Red;
+		Console.ForegroundColor = ConsoleColor.Yellow;
+
+		Console.Write(" ");
+
+		if ((i + 1) % 5 == 0)
+		{
+			Console.WriteLine();
+			Console.WriteLine(); // Extra rad för "luft"
 		}
 	}
-	if (!foundAnyVehicles)
-	{
-		Console.WriteLine("Parkeringsplatsen är helt tom.");
-	}
-	Console.WriteLine("------------------------");
+
+	Console.BackgroundColor = ConsoleColor.Red;
+    Console.ForegroundColor = ConsoleColor.Yellow;
+
+    Console.WriteLine("\n--------------------------------------------------------------------------------");
+    Console.WriteLine("FÖRKLARING:");
+    Console.BackgroundColor = ConsoleColor.Green;
+    Console.ForegroundColor = ConsoleColor.Black;
+    Console.Write("[XX:---]      ");
+    Console.ResetColor();
+    Console.BackgroundColor = ConsoleColor.Red;
+    Console.ForegroundColor = ConsoleColor.Yellow;
+    Console.WriteLine(" = Ledig Plats");
+
+    Console.BackgroundColor = ConsoleColor.DarkYellow;
+    Console.ForegroundColor = ConsoleColor.Black;
+    Console.Write("[XX:REGNUM]  ");
+    Console.ResetColor();
+    Console.BackgroundColor = ConsoleColor.Red;
+    Console.ForegroundColor = ConsoleColor.Yellow;
+    Console.WriteLine(" = Halvfull Plats (1 MC)");
+
+    Console.BackgroundColor = ConsoleColor.DarkRed;
+    Console.ForegroundColor = ConsoleColor.White;
+    Console.Write("[XX:REGNUM]  ");
+    Console.ResetColor();
+    Console.BackgroundColor = ConsoleColor.Red;
+    Console.ForegroundColor = ConsoleColor.Yellow;
+    Console.WriteLine(" = Full Plats (Bil eller 2 MC)");
+    Console.WriteLine("--------------------------------------------------------------------------------");
 }
 
-
-//TODO: Söka efter fordon.
 void SearchByRegNum(string regNum)
 {
 	int findIndex = FindVehicleIndexByRegNum(regNum);
@@ -478,7 +537,6 @@ void ShowSpotContent(int spotNumber)
 		Console.WriteLine($"\nOgiltigt platsnummer. Ange ett nummer mellan 1 och {parkingGarage.Length}.");
 	}
 }
-
 bool isRegNumValid(string regNum)
 {
 	return !String.IsNullOrEmpty(regNum) && regNum.Length <= 10 && !regNum.Contains(" ");
