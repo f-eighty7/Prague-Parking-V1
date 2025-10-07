@@ -91,7 +91,7 @@ void PragueParking()
 		{
 			while (true)
 			{
-				Console.Write("\nAnge reg-nr (max 10 tecken) på fordonet du vill ta bort (0 för att avbryta): ");
+				Console.Write("\nAnge reg-nr (max 10 tecken) på fordonet du vill ta bort. (0) för att avbryta: ");
 				string vehicleToRemove = Console.ReadLine().ToUpper();
 
 				if (vehicleToRemove == "0")
@@ -121,7 +121,7 @@ void PragueParking()
 		{
 			while (true)
 			{
-				Console.Write("\nAnge reg-nr (max 10 tecken) på fordonet som ska flyttas (0 för att backa): ");
+				Console.Write("\nAnge reg-nr (max 10 tecken) på fordonet som ska flyttas. (0) för att avbryta: ");
 				string regNumToMove = Console.ReadLine().ToUpper();
 
 				if (regNumToMove == "0")
@@ -131,7 +131,7 @@ void PragueParking()
 
 				if (isRegNumValid(regNumToMove))
 				{
-					Console.Write("Ange ny plats (1-100) för fordonet (0 för att avbryta): ");
+					Console.Write("Ange ny plats (1-100) för fordonet. (0) för att avbryta: ");
 					if (int.TryParse(Console.ReadLine(), out int toSpotNumber))
 					{
 						if (toSpotNumber == 0)
@@ -164,7 +164,7 @@ void PragueParking()
 		{
 			while (true)
 			{
-				Console.Write("\nVill du söka med (1) Registreringsnummer, (2) Parkeringsplatsnummer. ((0) Avbryt): ");
+				Console.Write("\nVill du söka med (1) Registreringsnummer, (2) Parkeringsplatsnummer. (0) för att avbryta: ");
 				string searchChoice = Console.ReadLine();
 
 				if (searchChoice == "0")
