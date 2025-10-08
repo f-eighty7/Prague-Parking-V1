@@ -571,9 +571,23 @@ void ShowSpotContent(int spotNumber)
 	}
 }
 
+// Validerar ett registreringsnummer. Inte tomt, max 10 tecken, inga mellanslag, och endast bokstäver eller siffror.
 bool isRegNumValid(string regNum)
 {
-	return !String.IsNullOrEmpty(regNum) && regNum.Length <= 10 && !regNum.Contains(" ");
+	if (String.IsNullOrEmpty(regNum) || regNum.Length > 10 || regNum.Contains(" "))
+	{
+		return false;
+	}
+
+	foreach (char c in regNum)
+	{
+		if (!char.IsLetterOrDigit(c))
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 // TODO: Skapa en funktion som direkt säger att p-huset är tom när man vill söka, flytta, eller ta bort
