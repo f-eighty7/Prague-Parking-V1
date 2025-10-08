@@ -12,8 +12,6 @@
 		https://sv.wikipedia.org/wiki/Registreringsskylt
 */
 
-using System;
-
 Console.Title = "Prague Parking V1.1";
 
 string[] parkingGarage = new string[100];
