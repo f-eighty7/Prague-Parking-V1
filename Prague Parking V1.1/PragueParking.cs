@@ -60,9 +60,7 @@ void PragueParking()
 
 					if (isRegNumValid(regNum))
 					{
-						bool wasAdded = AddVehicle(parkingGarage, vehicleChoice, regNum);
-
-						if (wasAdded)
+						if (AddVehicle(parkingGarage, vehicleChoice, regNum))
 						{
 							Console.WriteLine("\nTryck valfri tangent för att återgå till menyn...");
 							Console.ReadKey();
@@ -71,7 +69,7 @@ void PragueParking()
 					}
 					else
 					{
-						Console.WriteLine("Felaktig inmatning av reg-nr.");
+						Console.WriteLine("\nFelaktig inmatning av reg-nr.");
 					}
 				}
 				else if (vehicleChoice == "0")
@@ -80,7 +78,7 @@ void PragueParking()
 				}
 				else
 				{
-					Console.WriteLine("Felaktig inmatning av fordonstyp. Ange 1 eller 2.");
+					Console.WriteLine("\nFelaktig inmatning av fordonstyp. Ange 1 eller 2.");
 				}
 			}
 		}
@@ -88,60 +86,27 @@ void PragueParking()
 		else if (userChoice == "2")
 		{
 			Console.Clear();
-			while (true)
+			if (IsGarageEmpty())
 			{
-				Console.Write("\nAnge reg-nr (max 10 tecken) på fordonet du vill ta bort. (0) för att avbryta: ");
-				string vehicleToRemove = Console.ReadLine().ToUpper();
-
-				if (vehicleToRemove == "0")
+				Console.WriteLine("\nParkeringshuset är helt tomt. Det finns inget att ta bort.");
+				Console.WriteLine("\nTryck valfri tangent för att återgå till menyn...");
+				Console.ReadKey();
+			}
+			else
+			{
+				while (true)
 				{
-					break;
-				}
+					Console.Write("\nAnge reg-nr (max 10 tecken) på fordonet du vill ta bort. (0) för att avbryta: ");
+					string vehicleToRemove = Console.ReadLine().ToUpper();
 
-				if (isRegNumValid(vehicleToRemove))
-				{
-					bool wasRemoved = RemoveVehicle(vehicleToRemove);
-
-					if (wasRemoved)
+					if (vehicleToRemove == "0")
 					{
-						Console.WriteLine("\nTryck valfri tangent för att återgå till menyn...");
-						Console.ReadKey();
 						break;
 					}
-				}
-				else
-				{
-					Console.WriteLine("\nFelaktig inmatning av reg-nr. Försök igen.");
-				}
-			}
-		}
 
-		else if (userChoice == "3")
-		{
-			Console.Clear();
-			while (true)
-			{
-				Console.Write("\nAnge reg-nr (max 10 tecken) på fordonet som ska flyttas. (0) för att avbryta: ");
-				string regNumToMove = Console.ReadLine().ToUpper();
-
-				if (regNumToMove == "0")
-				{
-					break;
-				}
-
-				if (isRegNumValid(regNumToMove))
-				{
-					Console.Write("Ange ny plats (1-100) för fordonet. (0) för att avbryta: ");
-					if (int.TryParse(Console.ReadLine(), out int toSpotNumber))
+					if (isRegNumValid(vehicleToRemove))
 					{
-						if (toSpotNumber == 0)
-						{
-							break;
-						}
-
-						bool success = MoveVehicle(regNumToMove, toSpotNumber);
-
-						if (success)
+						if (RemoveVehicle(vehicleToRemove))
 						{
 							Console.WriteLine("\nTryck valfri tangent för att återgå till menyn...");
 							Console.ReadKey();
@@ -150,12 +115,53 @@ void PragueParking()
 					}
 					else
 					{
-						Console.WriteLine("\nFelaktig inmatning. Vänligen ange en siffra för platsnummer.");
+						Console.WriteLine("\nFelaktig inmatning av reg-nr. Försök igen.");
 					}
 				}
-				else
+			}
+		}
+
+		else if (userChoice == "3")
+		{
+			Console.Clear();
+			if (IsGarageEmpty())
+			{
+				Console.WriteLine("\nParkeringshuset är helt tomt. Det finns inget att flytta.");
+				Console.WriteLine("\nTryck valfri tangent för att återgå till menyn...");
+				Console.ReadKey();
+			}
+			else
+			{
+				while (true)
 				{
-					Console.WriteLine("\nOgiltigt format på reg-nr. Försök igen.");
+					Console.Write("\nAnge reg-nr (max 10 tecken) på fordonet som ska flyttas. (0) för att avbryta: ");
+					string regNumToMove = Console.ReadLine().ToUpper();
+
+					if (regNumToMove == "0")
+					{
+						break;
+					}
+
+					if (isRegNumValid(regNumToMove))
+					{
+						int toSpotNumber = GetValidSpotNumber("\nAnge ny plats (1-100) för fordonet. (0) för att avbryta: ");
+
+						if (toSpotNumber == 0)
+						{
+							break;
+						}
+
+						if (MoveVehicle(regNumToMove, toSpotNumber))
+						{
+							Console.WriteLine("\nTryck valfri tangent för att återgå till menyn...");
+							Console.ReadKey();
+							break;
+						}
+					}
+					else
+					{
+						Console.WriteLine("\nOgiltigt format på reg-nr. Försök igen.");
+					}
 				}
 			}
 		}
@@ -163,37 +169,50 @@ void PragueParking()
 		else if (userChoice == "4")
 		{
 			Console.Clear();
-			while (true)
+
+			if (IsGarageEmpty())
 			{
-				Console.Write("\nVill du söka med (1) Registreringsnummer, (2) Parkeringsplatsnummer. (0) för att avbryta: ");
-				string searchChoice = Console.ReadLine();
-
-				if (searchChoice == "0")
+				Console.WriteLine("\nParkeringshuset är helt tomt. Det finns inget att söka efter.");
+				Console.WriteLine("\nTryck valfri tangent för att återgå till menyn...");
+				Console.ReadKey();
+			}
+			else
+			{
+				while (true)
 				{
-					break;
-				}
-				else if (searchChoice == "1")
-				{
-					Console.Write("Ange reg-nr att söka efter (max 10 tecken): ");
-					string regNumToSearch = Console.ReadLine().ToUpper();
+					Console.Write("\nVill du söka med (1) Registreringsnummer, (2) Parkeringsplatsnummer. (0) för att avbryta: ");
+					string searchChoice = Console.ReadLine();
 
-					if (isRegNumValid(regNumToSearch))
+					if (searchChoice == "0")
 					{
-						SearchByRegNum(regNumToSearch);
-						Console.WriteLine("\nTryck valfri tangent för att återgå till menyn...");
-						Console.ReadKey();
 						break;
 					}
-					else
+					else if (searchChoice == "1")
 					{
-						Console.WriteLine("\nFel: Du måste ange ett giltigt reg-nr.");
+						Console.Write("\nAnge reg-nr att söka efter (max 10 tecken): ");
+						string regNumToSearch = Console.ReadLine().ToUpper();
+
+						if (isRegNumValid(regNumToSearch))
+						{
+							SearchByRegNum(regNumToSearch);
+							Console.WriteLine("\nTryck valfri tangent för att återgå till menyn...");
+							Console.ReadKey();
+							break;
+						}
+						else
+						{
+							Console.WriteLine("\nFel: Du måste ange ett giltigt reg-nr.");
+						}
 					}
-				}
-				else if (searchChoice == "2")
-				{
-					Console.Write("\nAnge platsnummer att visa (1-100): ");
-					if (int.TryParse(Console.ReadLine(), out int spotNumToShow))
+					else if (searchChoice == "2")
 					{
+						int spotNumToShow = GetValidSpotNumber("\nAnge platsnummer att visa (1-100). (0) för att avbryta: ");
+
+						if (spotNumToShow == 0)
+						{
+							break;
+						}
+
 						ShowSpotContent(spotNumToShow);
 						Console.WriteLine("\nTryck valfri tangent för att återgå till menyn...");
 						Console.ReadKey();
@@ -201,12 +220,8 @@ void PragueParking()
 					}
 					else
 					{
-						Console.WriteLine("\nFelaktig inmatning. Vänligen ange ett platsnummer.");
+						Console.WriteLine("\nOgiltigt val. Vänligen välj 1 eller 2.");
 					}
-				}
-				else
-				{
-					Console.WriteLine("\nOgiltigt val. Vänligen välj 1 eller 2.");
 				}
 			}
 		}
@@ -243,6 +258,35 @@ void PragueParking()
 		}
 	}
 }
+
+//TODO: Skapa en funktion som säkrar inmatning av p-plats.
+int GetValidSpotNumber(string prompt)
+{
+	while (true)
+	{
+		Console.Write(prompt);
+		if (int.TryParse(Console.ReadLine(), out int spotNumber))
+		{
+			if (spotNumber == 0)
+			{
+				return 0;
+			}
+			if (spotNumber >= 1 && spotNumber <= 100)
+			{
+				return spotNumber;
+			}
+			else
+			{
+				Console.WriteLine("\nOgiltigt platsnummer. Ange ett nummer mellan 1-100.");
+			}
+		}
+		else
+		{
+			Console.WriteLine("\nFelaktig inmatning. Vänligen ange en siffra.");
+		}
+	}
+}
+
 bool AddVehicle(string[] garage, string vehicleChoice, string regNum)
 {
 	if (vehicleChoice == "2")
@@ -304,12 +348,6 @@ bool MoveVehicle(string regNum, int toSpot)
 		return false;
 	}
 
-	if (toSpot < 1 || toSpot > 100)
-	{
-		Console.WriteLine("\nOgiltig destinationsplats. Ange ett nummer mellan 1-100.");
-		return false;
-	}
-
 	int toIndex = toSpot - 1;
 
 	if (!String.IsNullOrEmpty(parkingGarage[toIndex]))
@@ -354,6 +392,7 @@ bool MoveVehicle(string regNum, int toSpot)
 	parkingGarage[fromIndex] = vehicleToKeep;
 
 	Console.WriteLine($"\nFordonet {regNum} har flyttats från plats {fromIndex + 1} till plats {toSpot}.");
+
 	return true;
 }
 
@@ -398,27 +437,6 @@ bool RemoveVehicle(string regNum)
 	}
 }
 
-//void UsedParkingSpots()
-//{
-//	Console.WriteLine("\n--- Parkerade Fordon ---");
-
-//	bool foundAnyVehicles = false;
-
-//	for (int i = 0; i < parkingGarage.Length; i++)
-//	{
-//		if (!String.IsNullOrEmpty(parkingGarage[i]))
-//		{
-//			foundAnyVehicles = true;
-//			Console.WriteLine($"Plats {i + 1}: {parkingGarage[i]}");
-//		}
-//	}
-//	if (!foundAnyVehicles)
-//	{
-//		Console.WriteLine("Parkeringsplatsen är helt tom.");
-//	}
-//	Console.WriteLine("------------------------");
-//}
-
 //TODO: Visualisering av vad som finns på parkeringsplatsen
 void VisualizeParkingLot()
 {
@@ -456,40 +474,62 @@ void VisualizeParkingLot()
 		if ((i + 1) % 5 == 0)
 		{
 			Console.WriteLine();
-			Console.WriteLine(); // Extra rad för "luft"
+			Console.WriteLine();
 		}
 	}
 
 	Console.BackgroundColor = ConsoleColor.Red;
-    Console.ForegroundColor = ConsoleColor.Yellow;
+	Console.ForegroundColor = ConsoleColor.Yellow;
 
-    Console.WriteLine("\n--------------------------------------------------------------------------------");
-    Console.WriteLine("FÖRKLARING:");
-    Console.BackgroundColor = ConsoleColor.Green;
-    Console.ForegroundColor = ConsoleColor.Black;
-    Console.Write("[XX:---]      ");
-    Console.ResetColor();
-    Console.BackgroundColor = ConsoleColor.Red;
-    Console.ForegroundColor = ConsoleColor.Yellow;
-    Console.WriteLine(" = Ledig Plats");
+	Console.WriteLine("\n--------------------------------------------------------------------------------");
+	Console.WriteLine("FÖRKLARING:");
+	Console.BackgroundColor = ConsoleColor.Green;
+	Console.ForegroundColor = ConsoleColor.Black;
+	Console.Write("[XX:---]      ");
+	Console.ResetColor();
+	Console.BackgroundColor = ConsoleColor.Red;
+	Console.ForegroundColor = ConsoleColor.Yellow;
+	Console.WriteLine(" = Ledig Plats");
 
-    Console.BackgroundColor = ConsoleColor.DarkYellow;
-    Console.ForegroundColor = ConsoleColor.Black;
-    Console.Write("[XX:REGNUM]  ");
-    Console.ResetColor();
-    Console.BackgroundColor = ConsoleColor.Red;
-    Console.ForegroundColor = ConsoleColor.Yellow;
-    Console.WriteLine(" = Halvfull Plats (1 MC)");
+	Console.BackgroundColor = ConsoleColor.DarkYellow;
+	Console.ForegroundColor = ConsoleColor.Black;
+	Console.Write("[XX:REGNUM]  ");
+	Console.ResetColor();
+	Console.BackgroundColor = ConsoleColor.Red;
+	Console.ForegroundColor = ConsoleColor.Yellow;
+	Console.WriteLine(" = Halvfull Plats (1 MC)");
 
-    Console.BackgroundColor = ConsoleColor.DarkRed;
-    Console.ForegroundColor = ConsoleColor.White;
-    Console.Write("[XX:REGNUM]  ");
-    Console.ResetColor();
-    Console.BackgroundColor = ConsoleColor.Red;
-    Console.ForegroundColor = ConsoleColor.Yellow;
-    Console.WriteLine(" = Full Plats (Bil eller 2 MC)");
-    Console.WriteLine("--------------------------------------------------------------------------------");
+	Console.BackgroundColor = ConsoleColor.DarkRed;
+	Console.ForegroundColor = ConsoleColor.White;
+	Console.Write("[XX:REGNUM]  ");
+	Console.ResetColor();
+	Console.BackgroundColor = ConsoleColor.Red;
+	Console.ForegroundColor = ConsoleColor.Yellow;
+	Console.WriteLine(" = Full Plats (Bil eller 2 MC)");
+	Console.WriteLine("--------------------------------------------------------------------------------");
 }
+
+//void UsedParkingSpots()
+//{
+//	Console.Clear();
+//	Console.WriteLine("\n--- Parkerade Fordon ---");
+
+//	bool foundAnyVehicles = false;
+
+//	for (int i = 0; i < parkingGarage.Length; i++)
+//	{
+//		if (!String.IsNullOrEmpty(parkingGarage[i]))
+//		{
+//			foundAnyVehicles = true;
+//			Console.WriteLine($"Plats {i + 1}: {parkingGarage[i]}");
+//		}
+//	}
+//	if (!foundAnyVehicles)
+//	{
+//		Console.WriteLine("Parkeringsplatsen är helt tom.");
+//	}
+//	Console.WriteLine("------------------------");
+//}
 
 void SearchByRegNum(string regNum)
 {
@@ -519,25 +559,32 @@ int FindVehicleIndexByRegNum(string regNum)
 
 void ShowSpotContent(int spotNumber)
 {
-	if (spotNumber >= 1 && spotNumber <= 100)
-	{
-		int index = spotNumber - 1;
+	int index = spotNumber - 1;
 
-		if (string.IsNullOrEmpty(parkingGarage[index]))
-		{
-			Console.WriteLine($"\nPlats {spotNumber} är tom.");
-		}
-		else
-		{
-			Console.WriteLine($"\nPå plats {spotNumber} står: {parkingGarage[index]}");
-		}
+	if (string.IsNullOrEmpty(parkingGarage[index]))
+	{
+		Console.WriteLine($"\nPlats {spotNumber} är tom.");
 	}
 	else
 	{
-		Console.WriteLine($"\nOgiltigt platsnummer. Ange ett nummer mellan 1 och {parkingGarage.Length}.");
+		Console.WriteLine($"\nPå plats {spotNumber} står: {parkingGarage[index]}");
 	}
 }
+
 bool isRegNumValid(string regNum)
 {
 	return !String.IsNullOrEmpty(regNum) && regNum.Length <= 10 && !regNum.Contains(" ");
+}
+
+// TODO: Skapa en funktion som direkt säger att p-huset är tom när man vill söka, flytta, eller ta bort
+bool IsGarageEmpty()
+{
+	foreach (string spot in parkingGarage)
+	{
+		if (!String.IsNullOrEmpty(spot))
+		{
+			return false;
+		}
+	}
+	return true;
 }

@@ -73,7 +73,7 @@ void PragueParking()
 					}
 					else
 					{
-						Console.WriteLine("Felaktig inmatning av reg-nr.");
+						Console.WriteLine("\nFelaktig inmatning av reg-nr.");
 					}
 				}
 				else if (vehicleChoice == "0")
@@ -82,7 +82,7 @@ void PragueParking()
 				}
 				else
 				{
-					Console.WriteLine("Felaktig inmatning av fordonstyp. Ange 1 eller 2.");
+					Console.WriteLine("\nFelaktig inmatning av fordonstyp. Ange 1 eller 2.");
 				}
 			}
 		}
@@ -133,7 +133,7 @@ void PragueParking()
 
 				if (isRegNumValid(regNumToMove))
 				{
-					Console.Write("Ange ny plats (1-100) för fordonet. (0) för att avbryta: ");
+					Console.Write("\nAnge ny plats (1-100) för fordonet. (0) för att avbryta: ");
 					if (int.TryParse(Console.ReadLine(), out int toSpotNumber))
 					{
 						if (toSpotNumber == 0)
@@ -176,7 +176,7 @@ void PragueParking()
 				}
 				else if (searchChoice == "1")
 				{
-					Console.Write("Ange reg-nr att söka efter (max 10 tecken): ");
+					Console.Write("\nAnge reg-nr att söka efter (max 10 tecken): ");
 					string regNumToSearch = Console.ReadLine().ToUpper();
 
 					if (isRegNumValid(regNumToSearch))
