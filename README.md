@@ -1,217 +1,86 @@
-# INLÄMNINGSUPPGIFT 1
+# Prague Parking V1.1 🚗
 
-#### Prague Parking
+This is a text-based console application written in C# to manage a 100-space parking garage. The application is designed to be a simple and robust tool for parking staff, simulating the core functionalities of a parking management system.
 
-## Inledning
+The project was developed as part of a programming course with specific technical requirements, the main challenge being to handle all parking data within a single-dimensional `string` array.
 
-Kund önskar ett stöd för en parkering vid slottet i Prag.
+## About the Application
 
-Parkeringsplatsen är s.k. valet parking. Kunden lämnar nyckel och fordon samt får ett kvitto vilket ger
-rätten att hämta ut fordonet. Parkeringsplatsen sköts av "finniga studenter" och pensionärer så
-systemet måste vara enkelt.
+The system can handle two types of vehicles: Cars (CAR) and Motorcycles (MC). The rules are simple:
+* A **Car** occupies one full parking spot.
+* Two **Motorcycles** can share a single parking spot.
 
-Parkeringsplatsen tar emot bilar och motorcyklar.
+All data is stored and managed in real-time during execution by parsing and manipulating strings in the format `VEHICLE#REG_NUMBER`.
 
-I dagsläget hämtas alla fordon ut före 00.00 när parkeringen stänger. Ej uthämtade fordon körs till en
-parkering utanför stan och kunderna får betala straffavgift för att få ut sitt fordon. (Hanteras ej av det
-aktuella systemet)
+## Features
 
-### Kundens krav på systemet
+The application features a menu-driven interface and includes the following functionalities:
 
-```
-● Systemet skall kunna ta emot ett fordon och tala om vilken parkeringsplats den skall köras till.
-```
-```
-● Manuellt flytta ett fordon från en plats till en annan.
-```
-```
-● Ta bort fordon vid uthämtning.
-```
-```
-● Söka efter fordon.
-```
-```
-● Kunden önskar en textbaserad meny
-```
-I dagsläget behövs ingen sparfunktion. Datorn slås på när parkeringsplatsen öppnar och slås av när man
-går hem.
+#### Core Features
+* **Park Vehicle**: Add a car or motorcycle to the first available spot. The system handles the logic for placing a second MC in a spot that already contains one.
+* **Check-out Vehicle**: Remove a vehicle from the garage using its registration number.
+* **Move Vehicle**: Move an existing vehicle from one parking spot to another.
+* **Find Vehicle**: Quickly locate which spot a specific vehicle is parked in.
 
-### Tekniska krav
+#### Advanced Features
+* **✅ Visual Overview**: Get a color-coded overview of the entire parking garage presented as a 5x20 grid.
+    * <span style="color:green">**GREEN**</span>: Completely empty spot.
+    * <span style="color:yellow">**YELLOW**</span>: Spot with one motorcycle (room for one more).
+    * <span style="color:red">**RED**</span>: Fully occupied spot (one car or two motorcycles).
+* **🔒 Robust Input Validation**: All user input is validated to prevent errors and crashes. If a user enters invalid data (e.g., a letter instead of a number), they receive a clear error message and another chance to enter it correctly without being sent back to the main menu.
 
-```
-● All identifiering av fordon sker genom registreringsnummer
-```
-```
-● Registreringsnummer är alltid strängar med maxlängd 10 tecken.
-```
-```
-● På parkeringsplatsen finns 100 parkeringsrutor
-```
-```
-● En parkeringsruta kan innehålla
-```
-```
-o 1 bil eller
-```
-```
-o 1 mc eller
-```
-```
-o 2mc eller
-```
+## Getting Started
 
-```
-o vara tom
-```
-Parkeringsrutorna skall hanteras som en endimensionell vektor (array) av strängar. Vektorn skall hantera
-100 element. Kundens personal är människor och förväntar sig att platserna numreras 1–100 i in- och
-utmatningar i systemet.
+To run and test the application on your own computer, follow the instructions below.
 
-#### Loggbok
+### Prerequisites
+* For the **Visual Studio** method: [Visual Studio 2022](https://visualstudio.microsoft.com/) with the ".NET desktop development" workload installed.
+* For the **Terminal** method: [.NET 8 SDK](https://dotnet.microsoft.com/download) (or later).
 
-Förutom den rena applikationen behöver du under projektets gång föra en dagbok, eller loggbok. I den
-noterar du varje dag vad du har gjort i projektet. Du kan notera sådant som problem som uppstod och
-hur de löstes. Loggboken kommer att vara en del av din inlämning.
+---
 
-#### Github
+### Option 1: Using Visual Studio
 
-All inlämning ska göras via Github.
+This method is great for exploring the code, debugging, and seeing how the project is structured.
 
-Gör era repon **publika** , så att läraren (och eventuellt klasskamraterna) kan läsa vad som finns. Privata
-repon gör det väldigt besvärligt för läraren att granska ert arbete.
+1.  **Clone or download the repository**
+    Use `git clone` as described in Option 2, or download the project as a ZIP file from the repository page and extract it to a folder on your computer.
 
-Kom ihåg att ni ska skicka in länken till ert repo, inte till någon enskild fil. Om ni har problem så fråga
-läraren eller klasskamraterna.
+2.  **Open the project in Visual Studio**
+    * Launch Visual Studio.
+    * On the start screen, select **"Open a project or solution"**.
+    * Navigate to the folder where you cloned or extracted the project.
+    * Select the solution file (the file ending with `.sln`) and click **"Open"**.
 
-### Inlämning
+3.  **Run the application**
+    * Once the project is loaded, simply press the **Start button** (the green play icon ▶️) in the top toolbar.
+    * Alternatively, you can press the `F5` key.
 
-Inlämning sker individuellt. Dock är det inget som hindrar att ni arbetar tillsammans.
+Visual Studio will build the project, and a new console window will appear, running the application.
 
-Inlämning görs i lärplattformen. Där bifogar ni en länk till ert repo i GitHub. Dessutom laddar ni upp filen
-med er loggbok.
+---
 
-### Betygskrav
+### Option 2: Using the Terminal (.NET CLI)
 
-#### För G
+This method is ideal for a quick and simple way to run the application from your command line.
 
-```
-● För betyget G skall alla kraven ovan vara uppfyllda.
-```
-```
-● En individuell loggbok ska lämnas in. I något lämpligt format.
-```
-```
-● Applikationen skall gå att köra på en dator annan än er egen (dvs på lärarens dator)
-```
-```
-● Om det behövs några speciella handgrepp för att köra applikationen (utöver att trycka F5 eller
-Ctrl-F5 i Visual Studio) så skall dessa dokumenteras. Använd README.MD i GitHub för
-ändamålet.
-```
+1.  **Clone the repository**
+    Open a terminal (like Command Prompt, PowerShell, or Bash) and clone this repository to your local machine.
+    ```sh
+    git clone [URL-to-your-repository]
+    ```
 
-## Prague Parking 1.1 - För er som vill ha VG på uppgiften.
+2.  **Navigate to the project directory**
+    ```sh
+    cd [name-of-repository-folder]
+    ```
 
-När ni är klara, dvs har ett fungerande program med en enkel meny, med Prague Parking1.0:
+3.  **Run the application**
+    Use the .NET CLI to build and run the project.
+    ```sh
+    dotnet run
+    ```
+The application will now start in your terminal, and you can interact with the parking system through its menu.
 
-Skapa ett nytt projekt i er Solution med lämpligt namn. Det skall givetvis framgå tydligt att det är version
-1.
-
-Kopiera innehållet från 1.0-projektet till 1.1-projektet och fortsätt att arbeta därifrån.
-
-Lägg till **_minst två_** av nedanstående funktioner.
-
-1. **Visualisering av vad som finns på parkeringsplatsen**. Dvs vilka platser är lediga, halvfulla och
-    fyllda så att personalen får en god överblick. Pluspoäng för kreativa lösningar och färgmarkering.
-    Ni får lov att göra mer än en rapport tex alla motorcyklar, alla bilar, alla tomma platser etc. En
-    lista som visar vilka regnr och fordonstyper som finns på vilken plats är minimum.
-2. **Skapa en optimeringsrutin** som "flyttar ihop" lösa mc så att vi får så många mc som möjligt
-    dubbelparkerade. När optimeringen fungerar, glöm inte att personalen måste göra jobbet, dvs
-    ni måste skriva ut arbetsordrar _flytta MC abc123 från plats 3 till plats 7_ , _flytta MC bbb222 från_
-    _plats 12 till plats 16_ osv.
-3. **Säkra upp användarinput** - tex be om nya data om användare matar in felaktiga data när
-    registreringsnummer och eventuellt platsnummer skall anges. P-platsnummer måste vara tal i
-    intervallet 1–100, registreringsnummer får inte innehålla mellanslag o. dyl., samt måste hantera
-    västeuropeiska alfabeten samt siffror. Tex Ü, Å, Ä, Ö etc. Titta i Wikipedia:
-    https://sv.wikipedia.org/wiki/Registreringsskylt
-4. **Utöka lagringsformatet** för fordon så att man även får med datum och tid när ett fordon kom in.
-    (Tidsstämplingen skall ske automatiskt) När fordonet tas ut ur systemet så skall man få reda på
-    hur lång tid det varit parkerat. Detta kan nu vara mer än ett dygn. Använd lämplig
-    representation av datum och tid.
-
-### Ytterligare krav för VG
-
-För VG i betyg krävs det, förutom en fungerande version 1.1 av systemet enligt ovan, att ni skriver en
-personlig reflektion över kursen och projektet. Reflektionen kan lämpligen struktureras enligt nedan:
-
-1. Sammanfattning
-2. Hur vi/jag löste uppgiften
-3. Utmaningar i uppgiften och hur de löstes
-4. Metoder och modeller som använts för att lösa uppgiften
-5. Hur du skulle lösa uppgiften nästa gång, givet vad du vet nu
-
-
-6. Slutsats hemuppgift
-7. Slutsats kurs, så här långt
-
-En sådan reflektion behöver inte bli särskilt omfattande, men ett par – tre sidor är normalt.
-
-## Tips
-
-I denna uppgiften gäller det bland annat att lagra flera bitar information en ett enda element i en vektor.
-I en kommande kurs i databaser kommer vi att lära oss varför detta är en dålig idé, men för stunden har
-vi inget val.
-
-Antag att P-huset modelleras som en array av string:
-
-string[] parkingGarage = new string[100];
-
-Varje element i parkingGarage motsvarar då en P-plats. Indexet är P-platsens nummer minus 1 (index i
-arrayer börjar på noll, men den första P-platsen heter nummer 1)
-
-I varje element skall vi lagra
-
-- En bil, eller
-- En MC, eller
-- Två MC
-
-Varje fordon har
-
-- Fordonstyp (till exempel ”CAR” eller ”MC”)
-- Registreringsnummer (en kombination av bokstäver och siffror)
-
-Ett sätt att få ihop detta är att vi bildar en sträng av (fordonstyp + skiljetecken + registreringsnummer),
-där skiljetecknet är et tecken som garanterat inte finns med på en registreringsskylt, till exempel ”#”. Då
-skulle en bil med registreringsnummer ABC123 bilda strängen **CAR#ABC123**. På motsvarande sätt skulle
-en MC med registreringsnumret KLM789 beskrivas av strängen **MC#KLM**.
-
-Om man sedan tar denna idén ett steg vidare så skulle två MC med registreringsnumren KLM789 och
-FTP666 kunna slås ihop med ett annat skiljetecken, till exempel ”|”. P-platsen med de två MC skulle då
-innehålla strängen **MC#KLM789|MC#FTP**.
-
-För att göra denna ihop- och isärslagning används med fördel metoderna String.Join respektive
-String.Split.
-
-### Programstruktur
-
-Fundera på vilka metoder som behövs. Typiskt behövs metoder för
-
-- Utskrift av meny
-
-
-- Inläsning av menyval
-- Menyhantering/styrning av programflöde
-- Sökning
-    o Efter givet fordon
-    o Efter ledig plats för given fordonstyp
-- Utskrift
-    o Av enskild P-plats
-    o Av hela P-huset
-
-Ni kommer att upptäcka fler metoder – var inte rädda för att skapa många små metoder. Kom ihåg att
-en metod skall göra **en** sak. Undvik till exempel att ha en massa kod för användargränssnitt eller
-skärmdialog i metoder som inte måste ha det. Istället för att fråga efter ett registreringsnummer inuti en
-sökmetod så skicka in registreringsnumret som en parameter till metoden.
-
-Inte alla metoder behöver, eller skall vara, av typen **void**. Metoder kan returnera allt möjligt. Med en out
-parameter kan man till och med skicka tillbaka mer än en sak (Jämför med hur TryParse() fungerar).
-Detta skulle kunna vara användbart i en sökfunktion, till exempel.
+## Author
+Ahin
